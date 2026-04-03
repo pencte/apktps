@@ -1,8 +1,9 @@
 {
+  "version": 2,
   "routes": [
     {
       "src": "/growtopia/server_data.php",
-      "dest": "/api/server_data"
+      "dest": "/api/server_data.js"
     }
   ]
 }
