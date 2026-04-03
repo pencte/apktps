@@ -1,9 +1,8 @@
 {
-  "redirects": [
+  "routes": [
     {
-      "source": "/growtopia/server_data.php",
-      "destination": "http://139.99.72.27:17091/server_data.php",
-      "permanent": false
+      "src": "/growtopia/server_data.php",
+      "dest": "/api/server_data"
     }
   ]
 }
