@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/growtopia/server_data.php",
+      "destination": "http://139.99.72.27:17091/server_data.php",
+      "permanent": false
+    }
+  ]
+}
