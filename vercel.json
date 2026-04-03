@@ -1,7 +1,7 @@
 {
   "routes": [
     {
-      "src": "/growtopia/server_data.php",
+      "src": "/db/growtopia/server_data.php",
       "dest": "/api/server_data"
     }
   ]
