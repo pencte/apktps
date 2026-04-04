@@ -28,7 +28,7 @@ export default function handler(req, res) {
 port|17091
 type|1
 type|2
-loginurl|fff.albin-url.my.id:3000
+loginurl|vobg.vercel.app
 #maint|Server currently change hosting, please join discord.gg/gtps15 to get the latest host.
 meta|XinPS
 RTENDMARKERBS1001`;
