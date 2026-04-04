@@ -1,11 +1,53 @@
 export default function handler(req, res) {
   const userAgent = req.headers['user-agent'] || "";
 
-  // Contoh filter sederhana (Growtopia punya user-agent khas)
-  if (!userAgent.includes("Growtopia")) {
-    return res.status(403).send("Forbidden");
+const chalk = require('chalk');
+
+const allowedUserAgents = [
+  "UbiServices_SDK_2022.Release.9_PC64_ansi_static",
+  "UbiServices_SDK_2022.Release.9_ANDROID64_static",
+  "UbiServices_SDK_2022.Release.9_IOS64",
+  "UbiServices_SDK_2022.Release.9_ANDROID32_static",
+  "UbiServices_SDK_2022.Release.9_ANDROID32"
+];
+
+function Checker(req) {
+  const userAgent = req.headers['user-agent'];
+  const protocol = parseInt(req.body.protocol, 10);
+  const version = parseFloat(req.body.version);
+  const check = req.socket.servername;
+  const connectionHeader = req.headers['connection'];
+
+  if (
+    !protocol ||
+    !version ||
+    protocol < 210 ||
+    !check ||
+    check !== "www.growtopia1.com" ||
+    (connectionHeader && connectionHeader.toLowerCase() !== 'keep-alive' && connectionHeader !== '')
+  ) {
+    console.log(
+      chalk.red(
+        `[PROTECTION] Blocked Invalid protocol ${protocol}, version ${version}, User-Agent ${userAgent}`
+      )
+    );
+    return false;
   }
 
+  if (!allowedUserAgents.includes(userAgent)) {
+    console.log(
+      chalk.red("[PROTECTION] Blocked Client Anomaly: User-Agent not allowed")
+    );
+    return false;
+  }
+
+  console.log(chalk.green("[PROTECTION] Request Passed"));
+  return true;
+}
+
+module.exports = {
+  Checker
+};
   res.setHeader("Content-Type", "text/plain");
 
   res.status(200).send(`
