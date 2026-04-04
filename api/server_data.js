@@ -9,29 +9,20 @@ export default function handler(req, res) {
     "UbiServices_SDK_2022.Release.9_ANDROID32"
   ];
 
-  const userAgent = req.headers['user-agent'];
-  const protocol = parseInt(req.body?.protocol || "0", 10);
-  const version = parseFloat(req.body?.version || "0");
-  const host = req.headers['host'];
-  const connectionHeader = req.headers['connection'];
+  const userAgent = req.headers['user-agent'] || "";
 
-  if (
-    !protocol ||
-    !version ||
-    protocol < 210 ||
-    !host ||
-    (connectionHeader && connectionHeader.toLowerCase() !== 'keep-alive' && connectionHeader !== '')
-  ) {
-    console.log("[PROTECTION] Blocked:", protocol, version, userAgent);
+  // 🔒 VALIDASI UTAMA (yang bener buat GTPS)
+  if (!userAgent.startsWith("UbiServices_SDK")) {
+    console.log("[PROTECTION] Blocked Non-GTPS:", userAgent);
     return res.status(403).send("403 Forbidden");
   }
 
   if (!allowedUserAgents.includes(userAgent)) {
-    console.log("[PROTECTION] Blocked UA:", userAgent);
+    console.log("[PROTECTION] Blocked Unknown UA:", userAgent);
     return res.status(403).send("403 Forbidden");
   }
 
-  console.log("[PROTECTION] Request Passed");
+  console.log("[PROTECTION] Request Passed:", userAgent);
 
   const response = `server|139.99.72.27
 port|17091
