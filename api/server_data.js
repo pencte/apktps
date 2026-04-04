@@ -1,7 +1,6 @@
 export default function handler(req, res) {
   res.setHeader("Content-Type", "text/plain");
 
-  // ===== CHECKER =====
   const allowedUserAgents = [
     "UbiServices_SDK_2022.Release.9_PC64_ansi_static",
     "UbiServices_SDK_2022.Release.9_ANDROID64_static",
@@ -13,15 +12,14 @@ export default function handler(req, res) {
   const userAgent = req.headers['user-agent'];
   const protocol = parseInt(req.body?.protocol || "0", 10);
   const version = parseFloat(req.body?.version || "0");
-  const check = req.socket?.servername;
+  const host = req.headers['host'];
   const connectionHeader = req.headers['connection'];
 
   if (
     !protocol ||
     !version ||
     protocol < 210 ||
-    !check ||
-    check !== "www.growtopia1.com" ||
+    !host ||
     (connectionHeader && connectionHeader.toLowerCase() !== 'keep-alive' && connectionHeader !== '')
   ) {
     console.log("[PROTECTION] Blocked:", protocol, version, userAgent);
@@ -35,7 +33,6 @@ export default function handler(req, res) {
 
   console.log("[PROTECTION] Request Passed");
 
-  // ===== RESPONSE =====
   const response = `server|139.99.72.27
 port|17091
 type|1
