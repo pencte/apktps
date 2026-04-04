@@ -1,6 +1,3 @@
-export default function handler(req, res) {
-  const userAgent = req.headers['user-agent'] || "";
-
 const chalk = require('chalk');
 
 const allowedUserAgents = [
@@ -13,9 +10,9 @@ const allowedUserAgents = [
 
 function Checker(req) {
   const userAgent = req.headers['user-agent'];
-  const protocol = parseInt(req.body.protocol, 10);
-  const version = parseFloat(req.body.version);
-  const check = req.socket.servername;
+  const protocol = parseInt(req.body?.protocol || "0", 10);
+  const version = parseFloat(req.body?.version || "0");
+  const check = req.socket?.servername;
   const connectionHeader = req.headers['connection'];
 
   if (
@@ -45,18 +42,22 @@ function Checker(req) {
   return true;
 }
 
-module.exports = {
-  Checker
-};
+export default function handler(req, res) {
   res.setHeader("Content-Type", "text/plain");
 
-  res.status(200).send(`
-server|139.99.72.27
+  // 🔒 Proteksi dulu
+  if (!Checker(req)) {
+    return res.status(403).send("403 Forbidden");
+  }
+
+  const response = `server|139.99.72.27
 port|17091
 type|1
 type|2
 loginurl|fff.albin-url.my.id:3000
+#maint|Server currently change hosting, please join discord.gg/gtps15 to get the latest host.
 meta|XinPS
-RTENDMARKERBS1001
-`);
+RTENDMARKERBS1001`;
+
+  res.status(200).send(response);
 }
