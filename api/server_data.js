@@ -1,4 +1,6 @@
-export default function handler(req, res) {
+import { createClient } from '@vercel/kv';
+
+export default async function handler(req, res) {
   res.setHeader("Content-Type", "text/plain");
 
   const allowedUserAgents = [
@@ -11,7 +13,6 @@ export default function handler(req, res) {
 
   const userAgent = req.headers['user-agent'] || "";
 
-  // 🔒 VALIDASI UTAMA (yang bener buat GTPS)
   if (!userAgent.startsWith("UbiServices_SDK")) {
     console.log("[PROTECTION] Blocked Non-GTPS:", userAgent);
     return res.status(403).send("403 Forbidden");
@@ -24,17 +25,25 @@ export default function handler(req, res) {
 
   console.log("[PROTECTION] Request Passed:", userAgent);
 
-  // Ambil config dari environment variables (bisa diubah lewat panel)
-  const serverIP   = process.env.SERVER_IP      || "139.99.72.27";
-  const serverPort = process.env.SERVER_PORT     || "17091";
-  const loginUrl   = process.env.LOGIN_URL       || "vobg.vercel.app";
-  const maintMsg   = process.env.MAINT_MSG       || "";
-  const metaName   = process.env.META_NAME       || "XinPS";
-
-  let maintLine = "";
-  if (maintMsg && maintMsg.trim() !== "") {
-    maintLine = `maint|${maintMsg}\n`;
+  // Baca config dari Vercel KV
+  let config = {};
+  try {
+    const kv = createClient({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    });
+    config = await kv.hgetall("gtps:config") || {};
+  } catch (e) {
+    console.log("[KV] Gagal baca KV, pakai default:", e.message);
   }
+
+  const serverIP   = config.serverIP   || process.env.SERVER_IP   || "139.99.72.27";
+  const serverPort = config.serverPort || process.env.SERVER_PORT || "17091";
+  const loginUrl   = config.loginUrl   || process.env.LOGIN_URL   || "vobg.vercel.app";
+  const metaName   = config.metaName   || process.env.META_NAME   || "XinPS";
+  const maintMsg   = config.maintMsg   || process.env.MAINT_MSG   || "";
+
+  const maintLine = maintMsg.trim() ? `maint|${maintMsg}\n` : "";
 
   const response = `server|${serverIP}
 port|${serverPort}
