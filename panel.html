@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GTPS Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <title>Buyer Test Store — Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:        #050a0e;
-      --surface:   #0a1520;
-      --border:    #0f3a52;
-      --accent:    #00d4ff;
-      --accent2:   #00ff88;
-      --danger:    #ff4466;
-      --text:      #c8e8f0;
-      --muted:     #4a7a8a;
-      --glow:      0 0 20px rgba(0,212,255,0.35);
-      --glow2:     0 0 20px rgba(0,255,136,0.35);
+      --bg: #0c0c10;
+      --surface: #13131a;
+      --surface2: #1a1a24;
+      --border: rgba(255,255,255,0.07);
+      --border-active: rgba(139,92,246,0.6);
+      --accent: #8b5cf6;
+      --accent-light: #a78bfa;
+      --accent-dim: rgba(139,92,246,0.15);
+      --green: #34d399;
+      --green-dim: rgba(52,211,153,0.12);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.12);
+      --text: #e2e2f0;
+      --text-muted: #6b6b85;
+      --text-dim: #9595b0;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,40 +29,37 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
+      font-family: 'Syne', sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      overflow-x: hidden;
+      padding: 24px;
     }
 
-    /* Grid bg */
+    /* Ambient glow background */
     body::before {
       content: '';
       position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Scanline */
     body::after {
       content: '';
       position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(52,211,153,0.05) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
       pointer-events: none;
       z-index: 0;
     }
@@ -66,361 +68,416 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 520px;
+      max-width: 480px;
     }
 
     /* Header */
     .header {
-      text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
+      padding: 0 4px;
     }
 
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 2rem;
-      letter-spacing: 6px;
-      color: var(--accent);
-      text-shadow: var(--glow);
-      animation: flicker 4s infinite;
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
     }
 
-    .logo span { color: var(--accent2); text-shadow: var(--glow2); }
-
-    .subtitle {
-      font-size: 0.7rem;
-      letter-spacing: 4px;
-      color: var(--muted);
-      margin-top: 6px;
-      text-transform: uppercase;
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    @keyframes flicker {
-      0%, 95%, 100% { opacity: 1; }
-      96% { opacity: 0.8; }
-      97% { opacity: 1; }
-      98% { opacity: 0.6; }
-      99% { opacity: 1; }
+    .brand-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--accent-light);
+    }
+
+    .brand-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .brand-name span {
+      color: var(--accent-light);
+    }
+
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      padding-left: 48px;
     }
 
     /* Card */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 32px;
-      position: relative;
-      box-shadow: 0 0 40px rgba(0,212,255,0.05), inset 0 1px 0 rgba(0,212,255,0.1);
+      border-radius: 16px;
+      overflow: hidden;
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
-    }
-
-    /* Corner decorations */
-    .card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; right: 0;
-      width: 20px; height: 20px;
-      border-bottom: 2px solid var(--accent);
-      border-right: 2px solid var(--accent);
-    }
-
-    .corner-tl {
-      position: absolute;
-      top: 0; left: 0;
-      width: 20px; height: 20px;
-      border-top: 2px solid var(--accent2);
-      border-left: 2px solid var(--accent2);
-    }
-
-    /* Section label */
-    .section-label {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 20px;
+    .card-header {
+      padding: 20px 24px 18px;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
     }
 
-    .section-label::after {
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--green);
+      background: var(--green-dim);
+      border: 1px solid rgba(52,211,153,0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* Section */
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
       content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--border), transparent);
+      width: 3px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
     }
 
-    /* Form fields */
-    .field {
-      margin-bottom: 18px;
+    /* Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
+
+    /* Field */
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field:last-child { margin-bottom: 0; }
 
     .field label {
-      display: block;
-      font-size: 0.65rem;
-      letter-spacing: 2px;
-      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      color: var(--text-muted);
+      margin-bottom: 7px;
     }
 
     .field label .req {
-      color: var(--accent);
-      margin-left: 2px;
+      color: var(--accent-light);
+      font-size: 0.7rem;
     }
 
-    .input-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-prefix {
-      position: absolute;
-      left: 12px;
-      font-size: 0.75rem;
-      color: var(--accent);
-      pointer-events: none;
+    .field label .opt {
+      color: var(--text-muted);
+      opacity: 0.5;
+      font-size: 0.55rem;
     }
 
     input, textarea {
       width: 100%;
-      background: rgba(0,212,255,0.04);
+      background: var(--surface2);
       border: 1px solid var(--border);
-      border-radius: 3px;
-      color: var(--accent2);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.85rem;
-      padding: 10px 14px;
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      padding: 11px 14px;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
     }
 
-    input.has-prefix { padding-left: 28px; }
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.45;
+    }
 
     input:focus, textarea:focus {
-      border-color: var(--accent);
-      background: rgba(0,212,255,0.08);
-      box-shadow: 0 0 12px rgba(0,212,255,0.15);
+      border-color: var(--border-active);
+      background: rgba(139,92,246,0.05);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
     }
-
-    input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.6; }
 
     textarea {
       resize: none;
-      height: 70px;
-      color: var(--danger);
+      height: 80px;
+      color: var(--red);
+      line-height: 1.5;
     }
 
-    textarea:focus { border-color: var(--danger); box-shadow: 0 0 12px rgba(255,68,102,0.15); }
-
-    /* Row 2 col */
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
+    textarea:focus {
+      border-color: rgba(248,113,113,0.5);
+      background: rgba(248,113,113,0.04);
+      box-shadow: 0 0 0 3px rgba(248,113,113,0.08);
     }
 
     /* Divider */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 24px 0;
+    .sep {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
     }
 
+    /* Maint hint */
+    .hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    .hint b { color: var(--red); font-weight: 500; }
+
     /* Button */
+    .btn-wrap {
+      margin-top: 20px;
+    }
+
     .btn {
       width: 100%;
-      padding: 14px;
-      background: transparent;
-      border: 1px solid var(--accent);
-      border-radius: 3px;
-      color: var(--accent);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
+      padding: 13px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 4px;
-      text-transform: uppercase;
+      letter-spacing: 0.5px;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    .btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--accent);
-      transform: translateX(-100%);
-      transition: transform 0.3s;
-      z-index: 0;
+    .btn:hover {
+      opacity: 0.9;
+      box-shadow: 0 4px 24px rgba(139,92,246,0.4);
+      transform: translateY(-1px);
     }
 
-    .btn:hover::before { transform: translateX(0); }
-    .btn:hover { color: var(--bg); box-shadow: var(--glow); }
-    .btn span { position: relative; z-index: 1; }
+    .btn:active { transform: translateY(0); }
 
     .btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-    }
-    .btn:disabled::before { transform: translateX(-100%) !important; }
-    .btn:disabled { color: var(--accent) !important; }
-
-    /* Status */
-    .status {
-      margin-top: 16px;
-      padding: 12px 16px;
-      border-radius: 3px;
-      font-size: 0.78rem;
-      letter-spacing: 1px;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      animation: fadeIn 0.3s ease;
+      transform: none;
+      box-shadow: none;
     }
 
-    .status.show { display: flex; }
-
-    .status.success {
-      background: rgba(0,255,136,0.07);
-      border: 1px solid rgba(0,255,136,0.3);
-      color: var(--accent2);
-    }
-
-    .status.error {
-      background: rgba(255,68,102,0.07);
-      border: 1px solid rgba(255,68,102,0.3);
-      color: var(--danger);
-    }
-
-    .status.loading {
-      background: rgba(0,212,255,0.07);
-      border: 1px solid rgba(0,212,255,0.3);
-      color: var(--accent);
-    }
-
-    .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .success .dot { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); animation: pulse 1.5s infinite; }
-    .error .dot   { background: var(--danger);  box-shadow: 0 0 8px var(--danger); }
-    .loading .dot { background: var(--accent);  box-shadow: 0 0 8px var(--accent); animation: pulse 0.8s infinite; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Spinner */
     .spinner {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(0,212,255,0.2);
-      border-top-color: var(--accent);
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255,255,255,0.25);
+      border-top-color: #fff;
       border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      animation: spin 0.6s linear infinite;
       flex-shrink: 0;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* Alert */
+    .alert {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      align-items: flex-start;
+      gap: 10px;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert.show { display: flex; }
+
+    .alert-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .alert.success {
+      background: var(--green-dim);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: var(--green);
+    }
+
+    .alert.error {
+      background: var(--red-dim);
+      border: 1px solid rgba(248,113,113,0.25);
+      color: var(--red);
+    }
+
+    .alert.loading {
+      background: var(--accent-dim);
+      border: 1px solid rgba(139,92,246,0.25);
+      color: var(--accent-light);
+    }
+
     /* Footer */
     .footer {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 16px;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.6rem;
-      letter-spacing: 2px;
-      color: var(--muted);
-      opacity: 0.5;
-    }
-
-    /* Maint toggle */
-    .maint-hint {
-      font-size: 0.6rem;
-      color: var(--muted);
-      margin-top: 5px;
+      color: var(--text-muted);
+      opacity: 0.4;
       letter-spacing: 1px;
     }
-
-    .maint-hint span { color: var(--danger); }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <div class="header">
-      <div class="logo">Buyer<span> Test</span></div>
-      <div class="subtitle">Apk Configuration Panel</div>
+      <div class="brand-row">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-name">Buyer <span>Test Store</span></div>
+      </div>
+      <div class="brand-sub">apk server configuration panel</div>
     </div>
 
     <div class="card">
-      <div class="corner-tl"></div>
-
-      <div class="section-label">// Server Config</div>
-
-      <div class="row">
-        <div class="field">
-          <label>IP Address <span class="req">*</span></label>
-          <input type="text" id="server" placeholder="ip server" autocomplete="off" spellcheck="false"/>
-        </div>
-        <div class="field">
-          <label>Port <span class="req">*</span></label>
-          <input type="text" id="port" placeholder="port server gtps" autocomplete="off" spellcheck="false"/>
+      <div class="card-header">
+        <div class="card-title">APK Server Configuration</div>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          online
         </div>
       </div>
 
-      <div class="field">
-        <label>Login URL <span class="req">*</span></label>
-        <input type="text" id="loginurl" placeholder="your domain logurl" autocomplete="off" spellcheck="false"/>
-      </div>
+      <div class="card-body">
+        <div class="section-title">Server Info</div>
 
-      <div class="field">
-        <label>Meta / Server Name <span class="req">*</span></label>
-        <input type="text" id="meta" placeholder="yournamegtps" autocomplete="off" spellcheck="false"/>
-      </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>IP Address <span class="req">*</span></label>
+            <input type="text" id="server" placeholder="0.0.0.0" autocomplete="off" spellcheck="false"/>
+          </div>
+          <div class="field">
+            <label>Port <span class="req">*</span></label>
+            <input type="text" id="port" placeholder="17091" autocomplete="off" spellcheck="false"/>
+          </div>
+        </div>
 
-      <hr class="divider"/>
+        <div class="field">
+          <label>Login URL <span class="req">*</span></label>
+          <input type="text" id="loginurl" placeholder="example.vercel.app" autocomplete="off" spellcheck="false"/>
+        </div>
 
-      <div class="section-label">// Maintenance</div>
+        <div class="field">
+          <label>Meta / Server Name <span class="req">*</span></label>
+          <input type="text" id="meta" placeholder="ServerName" autocomplete="off" spellcheck="false"/>
+        </div>
 
-      <div class="field">
-        <label>Maintenance Message <span style="color:var(--muted)">(opsional)</span></label>
-        <textarea id="maint" placeholder="Kosongkan jika server tidak maintenance..."></textarea>
-        <div class="maint-hint">Isi teks → server <span>maintenance</span>. Kosongkan → server normal.</div>
-      </div>
+        <div class="sep"></div>
 
-      <button class="btn" id="saveBtn" onclick="saveConfig()">
-        <span id="btnText">⚡ SAVE CONFIG</span>
-      </button>
+        <div class="section-title">Maintenance</div>
 
-      <div class="status" id="status">
-        <div class="dot" id="statusDot"></div>
-        <div id="statusMsg"></div>
+        <div class="field">
+          <label>Maintenance Message <span class="opt">optional</span></label>
+          <textarea id="maint" placeholder="Kosongkan jika server aktif..."></textarea>
+          <div class="hint">Isi teks → server masuk mode <b>maintenance</b>. Kosongkan → server berjalan normal.</div>
+        </div>
+
+        <div class="btn-wrap">
+          <button class="btn" id="saveBtn" onclick="saveConfig()">
+            <svg id="btnIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </svg>
+            <span id="btnText">Save Configuration</span>
+          </button>
+        </div>
+
+        <div class="alert" id="alertBox">
+          <div id="alertIcon" class="alert-icon"></div>
+          <div id="alertMsg"></div>
+        </div>
       </div>
     </div>
 
-    <div class="footer">APK PANEL CONFIG &nbsp;•&nbsp; POWERED BY TEST</div>
+    <div class="footer">by Test &nbsp;·&nbsp; 2025</div>
   </div>
 
   <script>
-    // Load config saat halaman buka
+    // Load config on page open — populate fields from saved config
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const res = await fetch('/api/get_config');
@@ -432,15 +489,13 @@
           document.getElementById('meta').value     = cfg.meta     || '';
           document.getElementById('maint').value    = cfg.maint    || '';
         }
-      } catch(e) { /* gagal load, biarkan kosong */ }
+      } catch(e) { /* silent fail — fields stay empty */ }
     });
 
     async function saveConfig() {
       const btn    = document.getElementById('saveBtn');
-      const status = document.getElementById('status');
-      const msg    = document.getElementById('statusMsg');
-      const dot    = document.getElementById('statusDot');
       const btnTxt = document.getElementById('btnText');
+      const btnIcon= document.getElementById('btnIcon');
 
       const data = {
         server:   document.getElementById('server').value.trim(),
@@ -451,17 +506,15 @@
       };
 
       if (!data.server || !data.port || !data.loginurl || !data.meta) {
-        showStatus('error', 'IP, Port, Login URL, dan Meta wajib diisi!');
+        showAlert('error', 'IP, Port, Login URL, dan Meta wajib diisi.');
         return;
       }
 
-      // Loading state
+      // Loading
       btn.disabled = true;
-      btnTxt.innerHTML = '<span style="display:flex;align-items:center;justify-content:center;gap:8px"><span class="spinner" style="display:inline-block"></span> SAVING...</span>';
-      status.className = 'status loading show';
-      dot.style.cssText = '';
-      dot.className = 'dot';
-      msg.textContent = 'Mengirim config ke GitHub...';
+      btnIcon.outerHTML = '<div class="spinner" id="btnIcon"></div>';
+      btnTxt.textContent = 'Saving...';
+      showAlert('loading', 'Mengirim konfigurasi ke GitHub...');
 
       try {
         const res  = await fetch('/api/save_config', {
@@ -472,24 +525,33 @@
         const json = await res.json();
 
         if (json.success) {
-          showStatus('success', json.message || 'Config berhasil disimpan!');
+          showAlert('success', json.message || 'Konfigurasi berhasil disimpan!');
         } else {
-          showStatus('error', json.message || 'Gagal menyimpan config.');
+          showAlert('error', json.message || 'Gagal menyimpan konfigurasi.');
         }
       } catch(e) {
-        showStatus('error', 'Gagal konek ke server: ' + e.message);
+        showAlert('error', 'Gagal konek ke server: ' + e.message);
       }
 
       btn.disabled = false;
-      btnTxt.textContent = '⚡ SAVE CONFIG';
+      document.getElementById('btnIcon').outerHTML = `<svg id="btnIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`;
+      btnTxt.textContent = 'Save Configuration';
     }
 
-    function showStatus(type, message) {
-      const status = document.getElementById('status');
-      const msg    = document.getElementById('statusMsg');
-      const dot    = document.getElementById('statusDot');
-      status.className = `status ${type} show`;
-      msg.textContent  = message;
+    function showAlert(type, message) {
+      const box  = document.getElementById('alertBox');
+      const msg  = document.getElementById('alertMsg');
+      const icon = document.getElementById('alertIcon');
+
+      const icons = {
+        success: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+        error:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+        loading: `<div class="spinner" style="width:13px;height:13px;border-color:rgba(139,92,246,0.25);border-top-color:var(--accent-light)"></div>`,
+      };
+
+      box.className = `alert ${type} show`;
+      icon.innerHTML = icons[type] || '';
+      msg.textContent = message;
     }
   </script>
 </body>
