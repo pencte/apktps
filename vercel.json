@@ -15,7 +15,7 @@
     },
     {
       "src": "/admin",
-      "dest": "/public/admin.html"
+      "dest": "/api/admin.js"
     }
   ]
 }
