@@ -1,54 +1,62 @@
-# GTPS Login Backend + Admin Panel
+# GTPS Panel — Setup Guide
 
-## 📁 Struktur File
-
+## Struktur File
 ```
-apktps/
-├── api/
-│   ├── server_data.js     ← endpoint utama GTPS (baca dari KV)
-│   ├── admin.js           ← halaman panel admin (HTML)
-│   ├── admin_get.js       ← API baca config dari KV
-│   └── admin_update.js    ← API tulis config ke KV
-├── vercel.json
-└── package.json
+/api/server_data.js   ← endpoint APK Growtopia (auto baca config.json)
+/api/save_config.js   ← endpoint save config dari panel
+/api/get_config.js    ← endpoint load config ke panel
+/public/panel.html    ← panel buyer
+/config.json          ← file config server (diupdate otomatis)
+/vercel.json
+/package.json
 ```
 
 ---
 
-## 🚀 Setup (Sekali Aja)
+## Setup (1x per buyer)
 
-### 1. Deploy project ke Vercel
+### 1. Buat Repo GitHub Baru
+- Buat repo baru di GitHub (bisa private)
+- Upload semua file ini ke repo tersebut
 
-### 2. Buat Vercel KV Database
+### 2. Buat GitHub Personal Access Token
+- Buka: https://github.com/settings/tokens
+- Klik **"Generate new token (classic)"**
+- Centang permission: **`repo`** (full control)
+- Copy tokennya (cuma muncul sekali!)
 
-1. Buka **Vercel Dashboard → Storage → Create Database → KV**
-2. Beri nama (misal: `gtps-config`) → Create
-3. Klik **Connect to Project** → pilih project kamu
-4. Vercel otomatis nambahin env var `KV_REST_API_URL` dan `KV_REST_API_TOKEN`
+### 3. Deploy ke Vercel
+- Buka: https://vercel.com/new
+- Import repo GitHub yang tadi dibuat
+- Sebelum deploy, tambahkan **Environment Variables**:
 
-### 3. Tambah 1 env var manual
+| Key | Value |
+|-----|-------|
+| `GITHUB_TOKEN` | token dari step 2 |
+| `GITHUB_REPO` | `username/nama-repo` (contoh: `john/gtps-buyer1`) |
 
-Di **Vercel Dashboard → Project → Settings → Environment Variables**, tambahkan:
+- Klik **Deploy**
 
-| Key               | Value              | Keterangan              |
-|-------------------|--------------------|-------------------------|
-| `ADMIN_PASSWORD`  | password_rahasia   | Password panel admin    |
+### 4. Kirim ke Buyer
+Kirim link ini ke buyer:
+```
+https://nama-project.vercel.app/panel
+```
 
-Itu aja! Redeploy sekali supaya env var aktif.
+Selesai! Buyer bisa langsung edit IP, port, dll dari panel.
 
 ---
 
-## 🎮 Cara Pakai Buyer
-
-1. Buka `https://namaproyek.vercel.app/admin`
-2. Masukkan Admin Password
-3. Ubah IP / Port / Login URL / Maintenance
-4. Klik **Simpan** → **perubahan aktif instan** ✅ (tanpa redeploy)
+## Cara Kerja
+1. Buyer buka `/panel` → isi form → klik Save
+2. Panel kirim data ke `/api/save_config`
+3. `save_config` update file `config.json` di GitHub via API
+4. Vercel detect perubahan di GitHub → auto redeploy (~30 detik)
+5. APK hit `/growtopia/server_data.php` → dapet config terbaru ✅
 
 ---
 
-## 🔒 Keamanan
-
-- Panel admin dilindungi password (`ADMIN_PASSWORD`)
-- Akun Vercel & KV tetap milik kamu, buyer tidak bisa akses
-- Endpoint GTPS tetap pakai validasi User-Agent
+## Catatan
+- Setiap buyer = 1 repo GitHub baru + 1 project Vercel baru
+- Gratis 100% (GitHub free + Vercel free tier)
+- Redeploy otomatis ~30 detik setelah save

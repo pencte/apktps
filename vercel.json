@@ -6,16 +6,16 @@
       "dest": "/api/server_data.js"
     },
     {
-      "src": "/api/admin_get",
-      "dest": "/api/admin_get.js"
+      "src": "/api/save_config",
+      "dest": "/api/save_config.js"
     },
     {
-      "src": "/api/admin_update",
-      "dest": "/api/admin_update.js"
+      "src": "/api/get_config",
+      "dest": "/api/get_config.js"
     },
     {
-      "src": "/admin",
-      "dest": "/api/admin.js"
+      "src": "/panel",
+      "dest": "/public/panel.html"
     }
   ]
 }
