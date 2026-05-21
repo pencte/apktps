@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const GITHUB_REPO  = process.env.GITHUB_REPO; // format: username/repo-name
+  const GITHUB_REPO  = process.env.GITHUB_REPO;
 
   if (!GITHUB_TOKEN || !GITHUB_REPO) {
     return res.status(500).json({ success: false, message: "Server belum dikonfigurasi (env missing)." });
@@ -23,7 +23,6 @@ export default async function handler(req, res) {
   const apiUrl   = `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`;
 
   try {
-    // 1. Ambil SHA file config.json yang sekarang
     const getRes = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${GITHUB_TOKEN}`,
@@ -40,11 +39,9 @@ export default async function handler(req, res) {
     const fileData = await getRes.json();
     const sha      = fileData.sha;
 
-    // 2. Buat konten config baru
     const newConfig = { server, port, loginurl, meta, maint: maint || "" };
     const content   = Buffer.from(JSON.stringify(newConfig, null, 2) + "\n").toString("base64");
 
-    // 3. Update file di GitHub
     const putRes = await fetch(apiUrl, {
       method: "PUT",
       headers: {
@@ -70,4 +67,4 @@ export default async function handler(req, res) {
   } catch (e) {
     return res.status(500).json({ success: false, message: "Error: " + e.message });
   }
-}
+};

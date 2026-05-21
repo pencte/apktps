@@ -1,6 +1,6 @@
-import config from '../config.json' assert { type: 'json' };
+const config = require('../config.json');
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.status(200).json(config);
-}
+};
