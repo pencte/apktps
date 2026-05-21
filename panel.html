@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GTPS Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #050a0e;
+      --surface:   #0a1520;
+      --border:    #0f3a52;
+      --accent:    #00d4ff;
+      --accent2:   #00ff88;
+      --danger:    #ff4466;
+      --text:      #c8e8f0;
+      --muted:     #4a7a8a;
+      --glow:      0 0 20px rgba(0,212,255,0.35);
+      --glow2:     0 0 20px rgba(0,255,136,0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* Grid bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanline */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 2rem;
+      letter-spacing: 6px;
+      color: var(--accent);
+      text-shadow: var(--glow);
+      animation: flicker 4s infinite;
+    }
+
+    .logo span { color: var(--accent2); text-shadow: var(--glow2); }
+
+    .subtitle {
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      color: var(--muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    @keyframes flicker {
+      0%, 95%, 100% { opacity: 1; }
+      96% { opacity: 0.8; }
+      97% { opacity: 1; }
+      98% { opacity: 0.6; }
+      99% { opacity: 1; }
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px;
+      position: relative;
+      box-shadow: 0 0 40px rgba(0,212,255,0.05), inset 0 1px 0 rgba(0,212,255,0.1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    }
+
+    /* Corner decorations */
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 20px; height: 20px;
+      border-bottom: 2px solid var(--accent);
+      border-right: 2px solid var(--accent);
+    }
+
+    .corner-tl {
+      position: absolute;
+      top: 0; left: 0;
+      width: 20px; height: 20px;
+      border-top: 2px solid var(--accent2);
+      border-left: 2px solid var(--accent2);
+    }
+
+    /* Section label */
+    .section-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* Form fields */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .field label .req {
+      color: var(--accent);
+      margin-left: 2px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 12px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      pointer-events: none;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(0,212,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--accent2);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    input.has-prefix { padding-left: 28px; }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      background: rgba(0,212,255,0.08);
+      box-shadow: 0 0 12px rgba(0,212,255,0.15);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.6; }
+
+    textarea {
+      resize: none;
+      height: 70px;
+      color: var(--danger);
+    }
+
+    textarea:focus { border-color: var(--danger); box-shadow: 0 0 12px rgba(255,68,102,0.15); }
+
+    /* Row 2 col */
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      color: var(--accent);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+      z-index: 0;
+    }
+
+    .btn:hover::before { transform: translateX(0); }
+    .btn:hover { color: var(--bg); box-shadow: var(--glow); }
+    .btn span { position: relative; z-index: 1; }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn:disabled::before { transform: translateX(-100%) !important; }
+    .btn:disabled { color: var(--accent) !important; }
+
+    /* Status */
+    .status {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 3px;
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .status.show { display: flex; }
+
+    .status.success {
+      background: rgba(0,255,136,0.07);
+      border: 1px solid rgba(0,255,136,0.3);
+      color: var(--accent2);
+    }
+
+    .status.error {
+      background: rgba(255,68,102,0.07);
+      border: 1px solid rgba(255,68,102,0.3);
+      color: var(--danger);
+    }
+
+    .status.loading {
+      background: rgba(0,212,255,0.07);
+      border: 1px solid rgba(0,212,255,0.3);
+      color: var(--accent);
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .success .dot { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); animation: pulse 1.5s infinite; }
+    .error .dot   { background: var(--danger);  box-shadow: 0 0 8px var(--danger); }
+    .loading .dot { background: var(--accent);  box-shadow: 0 0 8px var(--accent); animation: pulse 0.8s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(0,212,255,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      color: var(--muted);
+      opacity: 0.5;
+    }
+
+    /* Maint toggle */
+    .maint-hint {
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 5px;
+      letter-spacing: 1px;
+    }
+
+    .maint-hint span { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="logo">GT<span>PS</span></div>
+      <div class="subtitle">Server Configuration Panel</div>
+    </div>
+
+    <div class="card">
+      <div class="corner-tl"></div>
+
+      <div class="section-label">// Server Config</div>
+
+      <div class="row">
+        <div class="field">
+          <label>IP Address <span class="req">*</span></label>
+          <input type="text" id="server" placeholder="139.99.72.27" autocomplete="off" spellcheck="false"/>
+        </div>
+        <div class="field">
+          <label>Port <span class="req">*</span></label>
+          <input type="text" id="port" placeholder="17091" autocomplete="off" spellcheck="false"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Login URL <span class="req">*</span></label>
+        <input type="text" id="loginurl" placeholder="yourdomain.vercel.app" autocomplete="off" spellcheck="false"/>
+      </div>
+
+      <div class="field">
+        <label>Meta / Server Name <span class="req">*</span></label>
+        <input type="text" id="meta" placeholder="MyGTPS" autocomplete="off" spellcheck="false"/>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="section-label">// Maintenance</div>
+
+      <div class="field">
+        <label>Maintenance Message <span style="color:var(--muted)">(opsional)</span></label>
+        <textarea id="maint" placeholder="Kosongkan jika server tidak maintenance..."></textarea>
+        <div class="maint-hint">Isi teks → server <span>maintenance</span>. Kosongkan → server normal.</div>
+      </div>
+
+      <button class="btn" id="saveBtn" onclick="saveConfig()">
+        <span id="btnText">⚡ SAVE CONFIG</span>
+      </button>
+
+      <div class="status" id="status">
+        <div class="dot" id="statusDot"></div>
+        <div id="statusMsg"></div>
+      </div>
+    </div>
+
+    <div class="footer">GTPS PANEL &nbsp;•&nbsp; POWERED BY VERCEL</div>
+  </div>
+
+  <script>
+    // Load config saat halaman buka
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/get_config');
+        if (res.ok) {
+          const cfg = await res.json();
+          document.getElementById('server').value   = cfg.server   || '';
+          document.getElementById('port').value     = cfg.port     || '';
+          document.getElementById('loginurl').value = cfg.loginurl || '';
+          document.getElementById('meta').value     = cfg.meta     || '';
+          document.getElementById('maint').value    = cfg.maint    || '';
+        }
+      } catch(e) { /* gagal load, biarkan kosong */ }
+    });
+
+    async function saveConfig() {
+      const btn    = document.getElementById('saveBtn');
+      const status = document.getElementById('status');
+      const msg    = document.getElementById('statusMsg');
+      const dot    = document.getElementById('statusDot');
+      const btnTxt = document.getElementById('btnText');
+
+      const data = {
+        server:   document.getElementById('server').value.trim(),
+        port:     document.getElementById('port').value.trim(),
+        loginurl: document.getElementById('loginurl').value.trim(),
+        meta:     document.getElementById('meta').value.trim(),
+        maint:    document.getElementById('maint').value.trim(),
+      };
+
+      if (!data.server || !data.port || !data.loginurl || !data.meta) {
+        showStatus('error', 'IP, Port, Login URL, dan Meta wajib diisi!');
+        return;
+      }
+
+      // Loading state
+      btn.disabled = true;
+      btnTxt.innerHTML = '<span style="display:flex;align-items:center;justify-content:center;gap:8px"><span class="spinner" style="display:inline-block"></span> SAVING...</span>';
+      status.className = 'status loading show';
+      dot.style.cssText = '';
+      dot.className = 'dot';
+      msg.textContent = 'Mengirim config ke GitHub...';
+
+      try {
+        const res  = await fetch('/api/save_config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          showStatus('success', json.message || 'Config berhasil disimpan!');
+        } else {
+          showStatus('error', json.message || 'Gagal menyimpan config.');
+        }
+      } catch(e) {
+        showStatus('error', 'Gagal konek ke server: ' + e.message);
+      }
+
+      btn.disabled = false;
+      btnTxt.textContent = '⚡ SAVE CONFIG';
+    }
+
+    function showStatus(type, message) {
+      const status = document.getElementById('status');
+      const msg    = document.getElementById('statusMsg');
+      const dot    = document.getElementById('statusDot');
+      status.className = `status ${type} show`;
+      msg.textContent  = message;
+    }
+  </script>
+</body>
+</html>

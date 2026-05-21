@@ -15,7 +15,7 @@
     },
     {
       "src": "/panel",
-      "dest": "/public/panel.html"
+      "dest": "/panel.html"
     }
   ]
 }
