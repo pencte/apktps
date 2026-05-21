@@ -4,6 +4,18 @@
     {
       "src": "/growtopia/server_data.php",
       "dest": "/api/server_data.js"
+    },
+    {
+      "src": "/api/admin_get",
+      "dest": "/api/admin_get.js"
+    },
+    {
+      "src": "/api/admin_update",
+      "dest": "/api/admin_update.js"
+    },
+    {
+      "src": "/admin",
+      "dest": "/public/admin.html"
     }
   ]
 }

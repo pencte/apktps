@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTPS Admin Panel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 16px;
+    }
+
+    /* ---- LOGIN SCREEN ---- */
+    #loginScreen {
+      background: #1a1a2e;
+      border: 1px solid #2e2e50;
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+
+    #loginScreen .logo {
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+    }
+
+    #loginScreen h1 {
+      font-size: 1.4rem;
+      color: #a78bfa;
+      margin-bottom: 4px;
+    }
+
+    #loginScreen p {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 28px;
+    }
+
+    /* ---- PANEL SCREEN ---- */
+    #panelScreen { display: none; }
+
+    .card {
+      background: #1a1a2e;
+      border: 1px solid #2e2e50;
+      border-radius: 16px;
+      padding: 28px 28px;
+      margin-bottom: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .card-header .icon {
+      font-size: 1.4rem;
+    }
+
+    .card-header h2 {
+      font-size: 1.1rem;
+      color: #a78bfa;
+    }
+
+    .card-header p {
+      font-size: 0.78rem;
+      color: #555;
+    }
+
+    /* ---- INPUTS ---- */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      background: #0f0f1a;
+      border: 1px solid #2e2e50;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus { border-color: #7c3aed; }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #444;
+      margin-top: 4px;
+    }
+
+    /* ---- BUTTONS ---- */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: #1a1a2e;
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      margin-top: 8px;
+    }
+
+    /* ---- STATUS ---- */
+    .status {
+      display: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      margin-top: 14px;
+    }
+
+    .status.success {
+      display: block;
+      background: rgba(16,185,129,0.12);
+      border: 1px solid #10b981;
+      color: #10b981;
+    }
+
+    .status.error {
+      display: block;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+    }
+
+    .status.loading {
+      display: block;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid #7c3aed;
+      color: #a78bfa;
+    }
+
+    /* ---- BADGE ---- */
+    .badge {
+      display: inline-block;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid #10b981;
+      color: #10b981;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .top-bar h1 {
+      font-size: 1rem;
+      color: #a78bfa;
+    }
+
+    .logout-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover { color: #ef4444; border-color: #ef4444; }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="container">
+  <div id="loginScreen">
+    <div class="logo">🎮</div>
+    <h1>GTPS Admin Panel</h1>
+    <p>Masukkan password admin untuk lanjut</p>
+
+    <div class="field">
+      <label>Admin Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" />
+    </div>
+
+    <button class="btn btn-primary" onclick="doLogin()">Masuk</button>
+    <div id="loginStatus" class="status"></div>
+  </div>
+
+  <!-- ===== PANEL SCREEN ===== -->
+  <div id="panelScreen">
+    <div class="top-bar">
+      <h1>🎮 GTPS Admin Panel</h1>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🖥️</span>
+        <div>
+          <h2>Server Config</h2>
+          <p>Ubah IP, Port, dan Login URL server kamu</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Server IP / Domain</label>
+        <input type="text" id="serverIP" placeholder="Contoh: 139.99.72.27" />
+        <div class="hint">IP atau domain VPS kamu</div>
+      </div>
+
+      <div class="field">
+        <label>Port</label>
+        <input type="number" id="serverPort" placeholder="Contoh: 17091" min="1" max="65535" />
+        <div class="hint">Port game server (default Growtopia: 17091)</div>
+      </div>
+
+      <div class="field">
+        <label>Login URL</label>
+        <input type="text" id="loginUrl" placeholder="Contoh: namaproyek.vercel.app" />
+        <div class="hint">Domain vercel kamu (tanpa https://)</div>
+      </div>
+
+      <div class="field">
+        <label>Meta Name</label>
+        <input type="text" id="metaName" placeholder="Contoh: XinPS" />
+        <div class="hint">Nama server kamu</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🔧</span>
+        <div>
+          <h2>Maintenance</h2>
+          <p>Pesan maintenance (kosongkan jika tidak mau tampil)</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Pesan Maintenance</label>
+        <input type="text" id="maintMsg" placeholder="Contoh: Server sedang update, back soon!" />
+        <div class="hint">Kosongkan jika server normal (tidak maintenance)</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="saveBtn" onclick="saveConfig()">💾 Simpan & Deploy</button>
+    <div id="saveStatus" class="status"></div>
+
+    <button class="btn btn-danger" onclick="doLogout()">🚪 Logout</button>
+  </div>
+</div>
+
+<script>
+  let adminPassword = "";
+
+  // ---- LOGIN ----
+  async function doLogin() {
+    const pass = document.getElementById("loginPass").value.trim();
+    const statusEl = document.getElementById("loginStatus");
+
+    if (!pass) {
+      showStatus(statusEl, "error", "Password tidak boleh kosong!");
+      return;
+    }
+
+    showStatus(statusEl, "loading", "⏳ Memverifikasi...");
+
+    try {
+      const res = await fetch("/api/admin_get", {
+        headers: { "x-admin-password": pass }
+      });
+
+      if (res.status === 401) {
+        showStatus(statusEl, "error", "❌ Password salah!");
+        return;
+      }
+
+      if (!res.ok) {
+        showStatus(statusEl, "error", "❌ Gagal konek ke server.");
+        return;
+      }
+
+      const data = await res.json();
+      adminPassword = pass;
+
+      // Isi form dengan config saat ini
+      document.getElementById("serverIP").value   = data.serverIP   || "";
+      document.getElementById("serverPort").value = data.serverPort || "";
+      document.getElementById("loginUrl").value   = data.loginUrl   || "";
+      document.getElementById("metaName").value   = data.metaName   || "";
+      document.getElementById("maintMsg").value   = data.maintMsg   || "";
+
+      // Switch screen
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("panelScreen").style.display = "block";
+
+    } catch (err) {
+      showStatus(statusEl, "error", "❌ Error: " + err.message);
+    }
+  }
+
+  // ---- SAVE ----
+  async function saveConfig() {
+    const statusEl = document.getElementById("saveStatus");
+    const btn = document.getElementById("saveBtn");
+
+    const payload = {
+      serverIP:   document.getElementById("serverIP").value.trim(),
+      serverPort: document.getElementById("serverPort").value.trim(),
+      loginUrl:   document.getElementById("loginUrl").value.trim(),
+      metaName:   document.getElementById("metaName").value.trim(),
+      maintMsg:   document.getElementById("maintMsg").value.trim()
+    };
+
+    if (!payload.serverIP || !payload.serverPort || !payload.loginUrl) {
+      showStatus(statusEl, "error", "❌ Server IP, Port, dan Login URL wajib diisi!");
+      return;
+    }
+
+    btn.disabled = true;
+    showStatus(statusEl, "loading", "⏳ Menyimpan dan deploy ulang... (~30 detik)");
+
+    try {
+      const res = await fetch("/api/admin_update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": adminPassword
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showStatus(statusEl, "error", "❌ " + (data.error || "Gagal update"));
+      } else {
+        showStatus(statusEl, "success", "✅ " + data.message);
+      }
+    } catch (err) {
+      showStatus(statusEl, "error", "❌ Error: " + err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // ---- LOGOUT ----
+  function doLogout() {
+    adminPassword = "";
+    document.getElementById("loginPass").value = "";
+    document.getElementById("panelScreen").style.display = "none";
+    document.getElementById("loginScreen").style.display = "block";
+    showStatus(document.getElementById("loginStatus"), "success", "✅ Berhasil logout.");
+  }
+
+  // ---- HELPER ----
+  function showStatus(el, type, msg) {
+    el.className = "status " + type;
+    el.textContent = msg;
+  }
+
+  // Enter key buat login
+  document.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      if (document.getElementById("loginScreen").style.display !== "none" ||
+          !document.getElementById("loginScreen").style.display) {
+        doLogin();
+      }
+    }
+  });
+</script>
+</body>
+</html>
