@@ -1,7 +1,7 @@
 {
   "server": "139.99.72.27",
   "port": "55000",
-  "loginurl": "terranova-logurl.vercel.app",
+  "loginurl": "139.99.72.27",
   "meta": "XinPS",
   "maint": ""
 }
