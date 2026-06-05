@@ -1,7 +1,7 @@
 {
   "server": "139.99.72.27",
   "port": "55000",
-  "loginurl": "139.99.72.27",
+  "loginurl": "logurltps.vercel.app",
   "meta": "XinPS",
   "maint": ""
 }
